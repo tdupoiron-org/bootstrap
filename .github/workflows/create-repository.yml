@@ -18,4 +18,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Display the event payload
-        run: echo ${{ github.event.issue }}
+        run: echo ${{ github.event.issue.id }}
+        run: echo ${{ github.event.issue.title }}
+        run: echo ${{ github.event.issue.body }}
