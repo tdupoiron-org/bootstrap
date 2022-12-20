@@ -18,8 +18,8 @@ jobs:
         id: extract
         run: |
           echo "${{ github.event.issue.body }}" >> body.txt
-          echo "{repository_name}={$(awk '/### Repository name/{getline; getline; print}' body.txt)}" >> $GITHUB_OUTPUT
-          echo "{repository_visibility}={$(awk '/### Repository visibility/{getline; getline; print}' body.txt)}" >> $GITHUB_OUTPUT
+          echo "::set-output name=repository_name::$(awk '/### Repository name/{getline; getline; print}' body.txt)"
+          echo "::set-output name=repository_visibility::$(awk '/### Repository visibility/{getline; getline; print}' body.txt)"
 
   display_repository_settings:
     runs-on: ubuntu-latest
