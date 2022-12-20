@@ -1,1 +1,13 @@
+---
+name: Create Repository
+on:
+  issues:
+    types: [opened]
 
+jobs:
+
+  hello_world:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hello world action step
+        run: echo "Hello World!"
