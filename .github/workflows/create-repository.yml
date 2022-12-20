@@ -20,4 +20,6 @@ jobs:
       - run: echo ${{ github.event.issue.id }}
       - run: echo ${{ github.event.issue.title }}
       - run: |
-          echo $(awk '/### Repository name/{getline; getline; print}' ${{ github.event.issue.body }})
+          echo ${{ github.event.issue.body }} >> body.txt
+          cat body.txt
+          echo $(awk '/### Repository name/{getline; getline; print}' body.txt)
