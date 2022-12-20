@@ -8,16 +8,24 @@ on:
 
 jobs:
 
-  hello_world:
+  extract_repository_settings:
     runs-on: ubuntu-latest
+    outputs: 
+      repository_name: ${{ steps.extract.outputs.repository_name }}
+      repository_visibility: ${{ steps.extract.outputs.repository_visibility }}
     steps:
-      - name: Hello world action step
-        run: echo "Hello World!"
+      - name: Extract repository settings
+        id: extract
+        run: |
+          echo "${{ github.event.issue.body }}" >> body.txt
+          echo "::set-output name=repository_name::$(awk '/### Repository name/{getline; getline; print}' body.txt)"
+          echo "::set-output name=repository_visibility::$(awk '/### Repository visibility/{getline; getline; print}' body.txt)"
 
-  display_event: 
+  display_repository_settings:
     runs-on: ubuntu-latest
+    needs: extract_repository_settings
     steps:
-      - run: echo ${{ github.event.issue.id }}
-      - run: echo ${{ github.event.issue.title }}
-      - run: |
-          echo $(awk '/### Repository name/{getline; getline; print}' "${{ github.event.issue.body }}")
+      - name: Display repository settings
+        run: |
+          echo "Repository name: ${{ needs.extract_repository_settings.outputs.repository_name }}"
+          echo "Repository visibility: ${{ needs.extract_repository_settings.outputs.repository_visibility }}"
