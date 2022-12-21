@@ -18,9 +18,9 @@ body:
       label: "Repository visibility"
       description: The visibility of the newly created repository,
       options:
-        - Public
-        - Internal
-        - Private
+        - public
+        - internal
+        - private
     validations:
       required: true
 
