@@ -43,7 +43,7 @@ jobs:
         uses: andymckay/labeler@1.0.4
         with:
           add-labels: "approved, processing"
-          remove-labels: "rejected, waiting-for-approval, 1-repository-creation-failed, 2-branch-protection-creation-failed"
+          remove-labels: "rejected, waiting-for-approval, 1-repository-creation-failed, 2-branch-protection-creation-failed, done"
 
       - name: Checkout repository
         uses: actions/checkout@v2.6.0
@@ -87,7 +87,7 @@ jobs:
     if: contains(github.event.issue.labels.*.name, '1-repository-created')
 
     runs-on: ubuntu-latest
-    needs: create_repository
+    needs: [create_repository, extract_repository_settings]
 
     env:
       GITHUB_TOKEN: ${{ secrets.BOOTSTRAP_TOKEN }}
