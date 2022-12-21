@@ -33,6 +33,10 @@ jobs:
       #PRIVATE_KEY: ${{ secrets.BOOTSTRAP_PRIVATE_KEY }}
       #INSTALLATION_ID: ${{ secrets.BOOTSTRAP_INSTALLATION_ID }}
 
+    output:
+      status: ${{ steps.create_repository.outputs.status }}
+      error: ${{ steps.create_repository.outputs.error }}
+
     steps:
 
       - name: Approved
@@ -65,13 +69,32 @@ jobs:
             })
 
       - name: Repo created label
+        if: contains(needs.create_repository.outputs.status, 'success')
         uses: andymckay/labeler@1.0.4
         with:
           add-labels: "1-repository-created"
 
-      - name: Display output
-        run: |
-          echo "Repository id: ${{ steps.create_repository.outputs.repository_id }}"
+      - name: Repo creation failed label
+        if: contains(needs.create_repository.outputs.status, 'error')
+        uses: andymckay/labeler@1.0.4
+        with:
+          add-labels: "1-repository-creation-failed"
+
+  protect_repository:
+
+    if: contains(needs.create_repository.outputs.status, 'success')
+
+    runs-on: ubuntu-latest
+    needs: create_repository
+
+    env:
+      GITHUB_TOKEN: ${{ secrets.BOOTSTRAP_TOKEN }}
+
+    output:
+      status: ${{ steps.protect_repository.outputs.status }}
+      error: ${{ steps.protect_repository.outputs.error }}
+
+    steps:
 
       - name: Set repository policies
         id: protect-repository
@@ -81,12 +104,21 @@ jobs:
           repository_name: ${{ needs.extract_repository_settings.outputs.repository_name }}
 
       - name: Branch protection created label
+        if: contains(needs.protect_repository.outputs.status, 'success')
         uses: andymckay/labeler@1.0.4
         with:
           add-labels: "2-branch-protection-created, done"
           remove-labels: "processing"
 
+      - name: Branch protection creation failed label
+        if: contains(needs.protect_repository.outputs.status, 'error')
+        uses: andymckay/labeler@1.0.4
+        with:
+          add-labels: "2-branch-protection-creation-failed, done"
+          remove-labels: "processing"
+
       - name: Close issue
+        if: contains(needs.protect_repository.outputs.status, 'success')
         uses: actions/github-script@v6.3.3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
