@@ -1,0 +1,22 @@
+name: Create Repository
+
+description: Create a new repository
+
+inputs:
+  name:
+    description: The name of the repository
+    required: true
+  visibility:
+    description: The visibility of the repository
+    required: false
+    default: public
+
+outputs:
+  repository_id:
+    description: The ID of the repository
+  error:
+    description: The error message if the creation failed
+
+runs:
+  using: "node19"
+  main: "dist/action.js"
