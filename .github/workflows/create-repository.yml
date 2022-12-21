@@ -57,6 +57,7 @@ jobs:
           repository_visibility: ${{ needs.extract_repository_settings.outputs.repository_visibility }}
 
       - name: Add comment
+        if: contains(steps.create_repository.outputs.status, 'success')
         uses: actions/github-script@v6.3.3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
