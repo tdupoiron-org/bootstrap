@@ -64,6 +64,8 @@ jobs:
 
       - name: Assign issue
         uses: actions/github-script@v6.3.3
+        env:
+          ASSIGNEE: "tdupoiron"
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -71,7 +73,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              assignees: ["tdupoiron"]
+              assignees: [process.env.ASSIGNEE]
             })
 
       - name: Add comment
