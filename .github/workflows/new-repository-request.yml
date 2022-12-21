@@ -84,5 +84,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: "@process.env.ASSIGNEE please review this repository creation request : \n\n - Repository name : ${{ needs.extract_repository_settings.outputs.repository_name }} \n\n - Repository visibility : ${{ needs.extract_repository_settings.outputs.repository_visibility }}"
+              body: "@" + process.env.ASSIGNEE + " please review this repository creation request : \n\n - Repository name : ${{ needs.extract_repository_settings.outputs.repository_name }} \n\n - Repository visibility : ${{ needs.extract_repository_settings.outputs.repository_visibility }}"
             })
