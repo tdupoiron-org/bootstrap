@@ -111,3 +111,4 @@ jobs:
         uses: andymckay/labeler@1.0.4
         with:
           add-labels: "rejected"
+          remove-labels: "waiting-for-approval"

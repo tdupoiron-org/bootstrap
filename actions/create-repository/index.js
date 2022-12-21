@@ -26,8 +26,10 @@ async function createRepository(organization, name, visibility) {
     }).then((response) => {
         core.setOutput("repository_id", response.data.id);
         core.setOutput("repository_url", response.data.html_url);
+        core.setOutput("status", "success");
     }).catch((error) => {
-        core.setFailed(error);
+        core.setOutput("error", error.response.data);
+        core.setOutput("status", "error");
     });
 
 }
