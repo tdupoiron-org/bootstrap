@@ -3,6 +3,8 @@ name: New repository request
 title: "New repository request"
 description: Request a new corporate repository
 
+labels: [new-repository-request]
+
 body:
   - type: markdown
     attributes:
