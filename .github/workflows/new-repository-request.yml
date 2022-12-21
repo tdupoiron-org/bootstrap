@@ -24,10 +24,9 @@ jobs:
             const labels = context.payload.issue.labels.map(label => label.name)
             console.log(labels)
 
-      - name: Test label
-        if: github.event.issue.labels.*.name == 'new-repository-request'
+      - name: Display labels
         run: |
-          echo "Label is new-repository-request"
+          echo "${{ github.event.issue.labels.*.name }}"
 
 
 
