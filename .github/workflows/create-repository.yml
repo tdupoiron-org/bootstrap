@@ -14,6 +14,12 @@ jobs:
       repository_name: ${{ steps.extract.outputs.repository_name }}
       repository_visibility: ${{ steps.extract.outputs.repository_visibility }}
     steps:
+
+      - name: Simple Issue Labeler
+        uses: andymckay/labeler@1.0.4
+        with:
+          add-labels: "0-repository-creation-requested"
+
       - name: Extract repository settings
         id: extract
         run: |
