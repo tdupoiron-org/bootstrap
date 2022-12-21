@@ -11,4 +11,9 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     filename: 'action.js',
   },
+
+  optimization: {
+    minimize: false
+  },
+  
 };
