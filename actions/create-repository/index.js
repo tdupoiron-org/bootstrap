@@ -15,7 +15,7 @@ function createRepository(organization, name, visibility) {
     }).then((response) => {
         core.setOutput("repository_id", response.data.id);
     }).catch((error) => {
-        core.setOutput("error", error.response.data);
+        core.setFailed(error.response.data);
     });
 
 }
