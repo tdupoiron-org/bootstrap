@@ -50,6 +50,7 @@ jobs:
         uses: andymckay/labeler@1.0.4
         with:
           add-labels: "1-repository-created"
+          remove-labels: "0-repository-creation-requested"
 
       - name: Add comment
         uses: actions/github-script@v5
