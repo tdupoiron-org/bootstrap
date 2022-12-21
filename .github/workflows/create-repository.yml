@@ -52,7 +52,7 @@ jobs:
       - name: Add comment
         uses: actions/github-script@v6.3.3
         with:
-          github-token: ${{ secrets.BOOTSTRAP_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             github.rest.issues.createComment({
               issue_number: context.issue.number,
