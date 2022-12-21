@@ -9,7 +9,7 @@ on:
 jobs:
 
   extract_repository_settings:
-    if: github.event.issue.labels.*.name == 'new-repository-request'
+    #if: github.event.issue.labels.*.name == 'new-repository-request'
     runs-on: ubuntu-latest
     outputs: 
       repository_name: ${{ steps.extract.outputs.repository_name }}
