@@ -16,10 +16,18 @@ jobs:
       repository_visibility: ${{ steps.extract.outputs.repository_visibility }}
 
     steps:
-      - name: Display labels
-        run: |
-          echo "${{ github.event.issue.labels.*.name }}"
-          
+      - name: Display labels by javscript
+        uses: actions/github-script@v6.3.3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const labels = context.payload.issue.labels.map(label => label.name)
+            console.log(labels)
+
+
+
+
+
       - name: Extract repository settings
         id: extract
         run: |
