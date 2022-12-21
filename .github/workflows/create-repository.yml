@@ -38,7 +38,7 @@ jobs:
       - name: Approved
         uses: andymckay/labeler@1.0.4
         with:
-          add-labels: ["approved", "processing"]
+          add-labels: "approved", "processing"
 
       - name: Checkout repository
         uses: actions/checkout@v2.6.0
@@ -82,7 +82,7 @@ jobs:
       - name: Branch protection created label
         uses: andymckay/labeler@1.0.4
         with:
-          add-labels: ["2-branch-protection-created", "done"]
+          add-labels: "2-branch-protection-created", "done"
           remove-labels: "processing"
 
   reject_repository:
