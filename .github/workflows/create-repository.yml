@@ -85,7 +85,7 @@ jobs:
 
   protect_repository:
 
-    if: contains(github.event.issue.labels.*.name, '1-repository-created') or contains(needs.create_repository.outputs.status, 'success')
+    if: contains(github.event.issue.labels.*.name, '1-repository-created') || contains(needs.create_repository.outputs.status, 'success')
 
     runs-on: ubuntu-latest
     needs: [create_repository, extract_repository_settings]
