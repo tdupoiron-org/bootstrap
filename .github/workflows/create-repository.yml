@@ -33,9 +33,9 @@ jobs:
 
     env:
       GITHUB_TOKEN: ${{ secrets.BOOTSTRAP_TOKEN }}
-      APP_ID: ${{ secrets.BOOTSTRAP_APP_ID }}
-      PRIVATE_KEY: ${{ secrets.BOOTSTRAP_PRIVATE_KEY }}
-      INSTALLATION_ID: ${{ secrets.BOOTSTRAP_INSTALLATION_ID }}
+      #APP_ID: ${{ secrets.BOOTSTRAP_APP_ID }}
+      #PRIVATE_KEY: ${{ secrets.BOOTSTRAP_PRIVATE_KEY }}
+      #INSTALLATION_ID: ${{ secrets.BOOTSTRAP_INSTALLATION_ID }}
 
     steps:
       - name: Checkout repository
