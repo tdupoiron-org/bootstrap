@@ -28,6 +28,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2.6.0
 
+      - run: |
+          find
+
       - name: Create repository
         uses: ./actions/create-repository@main
         with: 
