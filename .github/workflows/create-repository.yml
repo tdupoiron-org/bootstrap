@@ -9,7 +9,6 @@ on:
 jobs:
 
   extract_repository_settings:
-    needs: checkout_repository
     runs-on: ubuntu-latest
     outputs: 
       repository_name: ${{ steps.extract.outputs.repository_name }}
