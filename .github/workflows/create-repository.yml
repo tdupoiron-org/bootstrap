@@ -25,9 +25,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: extract_repository_settings
 
-    permissions:
-      write-all: true
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2.6.0
@@ -36,7 +33,7 @@ jobs:
         id: create_repository
         uses: ./actions/create-repository
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.BOOTSTRAP_TOKEN }}
         with: 
           organization_name: ${{ github.repository_owner }}
           repository_name: ${{ needs.extract_repository_settings.outputs.repository_name }}
