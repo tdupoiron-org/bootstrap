@@ -13,8 +13,8 @@ jobs:
     outputs: 
       repository_name: ${{ steps.extract.outputs.repository_name }}
       repository_visibility: ${{ steps.extract.outputs.repository_visibility }}
-    steps:
 
+    steps:
       - name: Simple Issue Labeler
         uses: andymckay/labeler@1.0.4
         with:
@@ -52,7 +52,7 @@ jobs:
           add-labels: "1-repository-created"
 
       - name: Add comment
-        uses: github-script@v5
+        uses: actions/github-script@v5
         with:
           github-token: ${{ secrets.BOOTSTRAP_TOKEN }}
           script: |

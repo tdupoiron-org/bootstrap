@@ -3,9 +3,7 @@ name: Create a corporate repository
 title: "Create a corporate repository"
 description: Create a corporate repository
 labels:
-  - repository
 assignees:
-  - tdupoiron
 
 body:
   - type: markdown
