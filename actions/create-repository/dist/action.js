@@ -474,7 +474,7 @@ exports.prepareKeyValueMessage = exports.issueFileCommand = void 0;
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const fs = __importStar(__webpack_require__(7147));
 const os = __importStar(__webpack_require__(2037));
-const uuid_1 = __webpack_require__(3021);
+const uuid_1 = __webpack_require__(2277);
 const utils_1 = __webpack_require__(4570);
 function issueFileCommand(command, message) {
     const filePath = process.env[`GITHUB_${command}`];
@@ -10421,7 +10421,7 @@ function getUserAgent() {
 
 /***/ }),
 
-/***/ 3021:
+/***/ 2277:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -10441,9 +10441,9 @@ __webpack_require__.d(__webpack_exports__, {
   "version": () => (/* reexport */ esm_node_version)
 });
 
-;// CONCATENATED MODULE: external "crypto"
-const external_crypto_namespaceObject = require("crypto");
-var external_crypto_default = /*#__PURE__*/__webpack_require__.n(external_crypto_namespaceObject);
+// EXTERNAL MODULE: external "crypto"
+var external_crypto_ = __webpack_require__(6113);
+var external_crypto_default = /*#__PURE__*/__webpack_require__.n(external_crypto_);
 ;// CONCATENATED MODULE: ./node_modules/uuid/dist/esm-node/rng.js
 
 const rnds8Pool = new Uint8Array(256); // # of random values to pre-allocate
@@ -13243,6 +13243,14 @@ module.exports = require("assert");
 
 /***/ }),
 
+/***/ 6113:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("crypto");
+
+/***/ }),
+
 /***/ 2361:
 /***/ ((module) => {
 
@@ -15165,15 +15173,7 @@ var __webpack_exports__ = {};
 const core = __webpack_require__(2225);
 const { Octokit } = __webpack_require__(1584);
 const { createAppAuth } = __webpack_require__(8022);
-
-console.log("Creating a new repository...");
-console.log("Organization: " + process.env.INPUT_ORGANIZATION_NAME);
-console.log("Repository Name: " + process.env.INPUT_REPOSITORY_NAME);
-console.log("Visibility: " + process.env.INPUT_REPOSITORY_VISIBILITY);
-
-console.log("App ID: " + process.env.APP_ID);
-console.log("Installation ID: " + process.env.INSTALLATION_ID);
-console.log("Private Key: " + process.env.PRIVATE_KEY);
+global.crypto = __webpack_require__(6113)
 
 const octokit = new Octokit({
     authStrategy: createAppAuth,

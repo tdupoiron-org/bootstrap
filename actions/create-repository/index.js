@@ -1,15 +1,7 @@
 const core = require('@actions/core');
 const { Octokit } = require("@octokit/rest");
 const { createAppAuth } = require("@octokit/auth-app");
-
-console.log("Creating a new repository...");
-console.log("Organization: " + process.env.INPUT_ORGANIZATION_NAME);
-console.log("Repository Name: " + process.env.INPUT_REPOSITORY_NAME);
-console.log("Visibility: " + process.env.INPUT_REPOSITORY_VISIBILITY);
-
-console.log("App ID: " + process.env.APP_ID);
-console.log("Installation ID: " + process.env.INSTALLATION_ID);
-console.log("Private Key: " + process.env.PRIVATE_KEY);
+global.crypto = require('crypto')
 
 const octokit = new Octokit({
     authStrategy: createAppAuth,
