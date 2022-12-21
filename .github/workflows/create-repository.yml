@@ -148,4 +148,4 @@ jobs:
         uses: andymckay/labeler@1.0.4
         with:
           add-labels: "rejected"
-          remove-labels: "approved, processing, waiting-for-approval"
+          remove-labels: "approved, processing, waiting-for-approval, done"
