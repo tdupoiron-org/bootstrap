@@ -45,6 +45,17 @@ jobs:
         with:
           add-labels: "1-repository-created"
 
+      - name: Add comment
+        uses: github-script@v5
+        with:
+          github-token: ${{ secrets.BOOTSTRAP_TOKEN }}
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "Repository [${{ needs.extract_repository_settings.outputs.repository_name }}](${{ steps.create_repository.outputs.repository_url }}) created"
+
       - name: Display output
         run: |
           echo "Repository id: ${{ steps.create_repository.outputs.repository_id }}"

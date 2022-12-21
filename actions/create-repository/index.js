@@ -15,6 +15,7 @@ async function createRepository(organization, name, visibility) {
         auto_init: true,
     }).then((response) => {
         core.setOutput("repository_id", response.data.id);
+        core.setOutput("repository_url", response.data.html_url);
     }).catch((error) => {
         core.setFailed(error.response.data);
     });
