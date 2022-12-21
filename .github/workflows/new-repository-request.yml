@@ -16,6 +16,10 @@ jobs:
       repository_visibility: ${{ steps.extract.outputs.repository_visibility }}
 
     steps:
+      - name: Display labels
+        run: |
+          echo "${{ github.event.issue.labels.*.name }}"
+          
       - name: Extract repository settings
         id: extract
         run: |
