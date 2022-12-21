@@ -69,13 +69,13 @@ jobs:
             })
 
       - name: Repo created label
-        if: contains(needs.create_repository.outputs.status, 'success')
+        if: contains(steps.create_repository.outputs.status, 'success')
         uses: andymckay/labeler@1.0.4
         with:
           add-labels: "1-repository-created"
 
       - name: Repo creation failed label
-        if: contains(needs.create_repository.outputs.status, 'error')
+        if: contains(steps.create_repository.outputs.status, 'success')
         uses: andymckay/labeler@1.0.4
         with:
           add-labels: "1-repository-creation-failed"
@@ -97,28 +97,28 @@ jobs:
     steps:
 
       - name: Set repository policies
-        id: protect-repository
+        id: protect_repository
         uses: ./actions/protect-repository
         with: 
           organization_name: ${{ github.repository_owner }}
           repository_name: ${{ needs.extract_repository_settings.outputs.repository_name }}
 
       - name: Branch protection created label
-        if: contains(needs.protect_repository.outputs.status, 'success')
+        if: contains(steps.protect_repository.outputs.status, 'success')
         uses: andymckay/labeler@1.0.4
         with:
           add-labels: "2-branch-protection-created, done"
           remove-labels: "processing"
 
       - name: Branch protection creation failed label
-        if: contains(needs.protect_repository.outputs.status, 'error')
+        if: contains(steps.protect_repository.outputs.status, 'error')
         uses: andymckay/labeler@1.0.4
         with:
           add-labels: "2-branch-protection-creation-failed, done"
           remove-labels: "processing"
 
       - name: Close issue
-        if: contains(needs.protect_repository.outputs.status, 'success')
+        if: contains(steps.protect_repository.outputs.status, 'success')
         uses: actions/github-script@v6.3.3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
