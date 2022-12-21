@@ -62,6 +62,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: "Repository [${{ needs.extract_repository_settings.outputs.repository_name }}](${{ steps.create_repository.outputs.repository_url }}) created"
+            })
 
       - name: Display output
         run: |
