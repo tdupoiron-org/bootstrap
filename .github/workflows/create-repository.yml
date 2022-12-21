@@ -43,7 +43,7 @@ jobs:
         uses: andymckay/labeler@1.0.4
         with:
           add-labels: "approved, processing"
-          remove-labels: "rejected, waiting-for-approval"
+          remove-labels: "rejected, waiting-for-approval, 1-repository-creation-failed, 2-branch-protection-creation-failed"
 
       - name: Checkout repository
         uses: actions/checkout@v2.6.0
