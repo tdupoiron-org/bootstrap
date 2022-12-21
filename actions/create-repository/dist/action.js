@@ -15196,7 +15196,7 @@ async function createRepository(organization, name, visibility) {
         core.setOutput("repository_id", response.data.id);
         core.setOutput("repository_url", response.data.html_url);
     }).catch((error) => {
-        core.setFailed(error.response.data);
+        core.setFailed(error);
     });
 
 }
