@@ -6,7 +6,6 @@ on:
       - opened
       - reopened
       - edited
-      - labeled
 
 jobs:
 
