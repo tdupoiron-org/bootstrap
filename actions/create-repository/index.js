@@ -3,9 +3,9 @@ const { Octokit } = require("@octokit/rest");
 const { createAppAuth } = require("@octokit/auth-app");
 
 console.log("Creating a new repository...");
-console.log("Organization: " + core.getInput('organization_name'));
-console.log("Repository Name: " + core.getInput('repository_name'));
-console.log("Visibility: " + core.getInput('repository_visibility'));
+console.log("Organization: " + process.env.INPUT_ORGANIZATION_NAME);
+console.log("Repository Name: " + process.env.INPUT_REPOSITORY_NAME);
+console.log("Visibility: " + process.env.INPUT_REPOSITORY_VISIBILITY);
 
 console.log("App ID: " + process.env.APP_ID);
 console.log("Installation ID: " + process.env.INSTALLATION_ID);
