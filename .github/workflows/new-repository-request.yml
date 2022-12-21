@@ -1,0 +1,53 @@
+---
+name: New repository request
+on:
+  issues:
+    types:
+      - opened
+      - reopened
+
+jobs:
+
+  extract_repository_settings:
+    if: ${{ github.event.issue.labels.*.name == 'new-repository-request' }}
+    runs-on: ubuntu-latest
+    outputs: 
+      repository_name: ${{ steps.extract.outputs.repository_name }}
+      repository_visibility: ${{ steps.extract.outputs.repository_visibility }}
+
+    steps:
+      - name: Extract repository settings
+        id: extract
+        run: |
+          echo "${{ github.event.issue.body }}" >> body.txt
+          echo "::set-output name=repository_name::$(awk '/### Repository name/{getline; getline; print}' body.txt)"
+          echo "::set-output name=repository_visibility::$(awk '/### Repository visibility/{getline; getline; print}' body.txt)"
+
+  request_approval:
+    runs-on: ubuntu-latest
+    needs: extract_repository_settings
+
+    env:
+      GITHUB_TOKEN: ${{ secrets.BOOTSTRAP_TOKEN }}
+      #APP_ID: ${{ secrets.BOOTSTRAP_APP_ID }}
+      #PRIVATE_KEY: ${{ secrets.BOOTSTRAP_PRIVATE_KEY }}
+      #INSTALLATION_ID: ${{ secrets.BOOTSTRAP_INSTALLATION_ID }}
+
+    steps:
+      - name: Add comment
+        uses: actions/github-script@v6.3.3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "This repository creation request has been sent to the repository administrators for approval."
+            })
+
+      - name: Simple Issue Labeler
+        uses: andymckay/labeler@1.0.4
+        with:
+          add-labels: "waiting-for-approval"
+          remove-labels: "new-repository-request"
