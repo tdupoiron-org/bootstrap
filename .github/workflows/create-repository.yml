@@ -36,3 +36,7 @@ jobs:
     steps:
       - name: Create repository
         uses: .github/actions/create-repository
+        with: 
+          organization_name: ${{ github.repository_owner }}
+          repository_name: ${{ needs.extract_repository_settings.outputs.repository_name }}
+          repository_visibility: ${{ needs.extract_repository_settings.outputs.repository_visibility }}

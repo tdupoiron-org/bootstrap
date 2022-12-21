@@ -3,10 +3,13 @@ name: Create Repository
 description: Create a new repository
 
 inputs:
-  name:
+  organization_name:
+    description: The name of the organization
+    required: true
+  repository_name:
     description: The name of the repository
     required: true
-  visibility:
+  repository_visibility:
     description: The visibility of the repository
     required: false
     default: public

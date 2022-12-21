@@ -21,9 +21,9 @@ function createRepository(organization, name, visibility) {
 }
 
 // Get Parameters
-const organization = core.getInput('organization');
-const name = core.getInput('name');
-const visibility = core.getInput('visibility');
+const organization = core.getInput('organization_name');
+const name = core.getInput('repository_name');
+const visibility = core.getInput('repository_visibility');
 
 // Main
 createRepository(organization, name, visibility);
