@@ -10,6 +10,7 @@ jobs:
 
   extract_repository_settings:
     if: contains(github.event.issue.labels.*.name, 'new-repository-request')
+
     runs-on: ubuntu-latest
     outputs: 
       repository_name: ${{ steps.extract.outputs.repository_name }}
@@ -28,9 +29,6 @@ jobs:
         run: |
           echo "${{ github.event.issue.labels.*.name }}"
 
-
-
-
       - name: Extract repository settings
         id: extract
         run: |
@@ -44,9 +42,6 @@ jobs:
 
     env:
       GITHUB_TOKEN: ${{ secrets.BOOTSTRAP_TOKEN }}
-      #APP_ID: ${{ secrets.BOOTSTRAP_APP_ID }}
-      #PRIVATE_KEY: ${{ secrets.BOOTSTRAP_PRIVATE_KEY }}
-      #INSTALLATION_ID: ${{ secrets.BOOTSTRAP_INSTALLATION_ID }}
 
     steps:
       - name: Add comment
@@ -66,3 +61,27 @@ jobs:
         with:
           add-labels: "waiting-for-approval"
           remove-labels: "new-repository-request"
+
+      - name: Assign issue
+        uses: actions/github-script@v6.3.3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.addAssignees({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              assignees: ["${{ github.repository_owner }}"]
+            })
+
+      - name: Add comment
+        uses: actions/github-script@v6.3.3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: "@${{ github.repository_owner }} please review this repository creation request : \n\n - Repository name : ${{ needs.extract_repository_settings.outputs.repository_name }} \n\n - Repository visibility : ${{ needs.extract_repository_settings.outputs.repository_visibility }}"
+            })
