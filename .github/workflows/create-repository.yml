@@ -80,6 +80,7 @@ jobs:
         uses: andymckay/labeler@1.0.4
         with:
           add-labels: "1-repository-creation-failed"
+          remove-labels: "processing"
 
   protect_repository:
 
