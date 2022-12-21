@@ -76,7 +76,7 @@ jobs:
           add-labels: "1-repository-created"
 
       - name: Repo creation failed label
-        if: contains(steps.create_repository.outputs.status, 'success')
+        if: contains(steps.create_repository.outputs.status, 'error')
         uses: andymckay/labeler@1.0.4
         with:
           add-labels: "1-repository-creation-failed"
