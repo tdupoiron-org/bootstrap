@@ -8,6 +8,12 @@ on:
 
 jobs:
 
+  checkout_repository:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2.6.0
+
   extract_repository_settings:
     runs-on: ubuntu-latest
     outputs: 
