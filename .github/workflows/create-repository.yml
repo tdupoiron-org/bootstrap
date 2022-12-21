@@ -39,6 +39,7 @@ jobs:
         uses: andymckay/labeler@1.0.4
         with:
           add-labels: "approved, processing"
+          remove-labels: "waiting-for-approval"
 
       - name: Checkout repository
         uses: actions/checkout@v2.6.0
