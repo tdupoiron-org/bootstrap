@@ -75,7 +75,7 @@ jobs:
         uses: andymckay/labeler@1.0.4
         with:
           add-labels: "waiting-for-approval"
-          remove-labels: "new-repository-request"
+          remove-labels: "new-repository-request, rejected, approved"
 
       - name: Assign issue
         uses: actions/github-script@v6.3.3
