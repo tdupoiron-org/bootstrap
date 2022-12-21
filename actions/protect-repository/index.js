@@ -35,6 +35,7 @@ async function setBranchProtection(organization, name, branch) {
         core.setOutput("branch_policies", "yes");
         core.setOutput("status", "success");
     }).catch((error) => {
+        console.log(error);
         core.setOutput("error", error.response.data);
         core.setOutput("status", "error");
     });
