@@ -33,6 +33,9 @@ jobs:
 
     env:
       GITHUB_TOKEN: ${{ secrets.BOOTSTRAP_TOKEN }}
+      APP_ID: ${{ secrets.BOOTSTRAP_APP_ID }}
+      PRIVATE_KEY: ${{ secrets.BOOTSTRAP_PRIVATE_KEY }}
+      INSTALLATION_ID: ${{ secrets.BOOTSTRAP_INSTALLATION_ID }}
 
     steps:
       - name: Checkout repository
@@ -46,12 +49,6 @@ jobs:
           repository_name: ${{ needs.extract_repository_settings.outputs.repository_name }}
           repository_visibility: ${{ needs.extract_repository_settings.outputs.repository_visibility }}
 
-      - name: Simple Issue Labeler
-        uses: andymckay/labeler@1.0.4
-        with:
-          add-labels: "1-repository-created"
-          remove-labels: "0-repository-creation-requested"
-
       - name: Add comment
         uses: actions/github-script@v6.3.3
         with:
@@ -63,6 +60,12 @@ jobs:
               repo: context.repo.repo,
               body: "Repository [${{ needs.extract_repository_settings.outputs.repository_name }}](${{ steps.create_repository.outputs.repository_url }}) created"
             })
+
+      - name: Simple Issue Labeler
+        uses: andymckay/labeler@1.0.4
+        with:
+          add-labels: "1-repository-created"
+          remove-labels: "0-repository-creation-requested"
 
       - name: Display output
         run: |
