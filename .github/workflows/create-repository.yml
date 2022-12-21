@@ -1,9 +1,8 @@
 ---
 name: Create Repository
 on:
-  issues:
-    types:
-      - commented
+  issue_comment:
+    types: [created, edited]
 
 jobs:
 
