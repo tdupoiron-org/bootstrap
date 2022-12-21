@@ -33,7 +33,7 @@ jobs:
       #PRIVATE_KEY: ${{ secrets.BOOTSTRAP_PRIVATE_KEY }}
       #INSTALLATION_ID: ${{ secrets.BOOTSTRAP_INSTALLATION_ID }}
 
-    output:
+    outputs:
       status: ${{ steps.create_repository.outputs.status }}
       error: ${{ steps.create_repository.outputs.error }}
 
@@ -90,7 +90,7 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.BOOTSTRAP_TOKEN }}
 
-    output:
+    outputs:
       status: ${{ steps.protect_repository.outputs.status }}
       error: ${{ steps.protect_repository.outputs.error }}
 
