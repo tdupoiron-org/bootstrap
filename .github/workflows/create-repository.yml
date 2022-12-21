@@ -22,7 +22,8 @@ jobs:
 
   create_repository:
 
-    if: contains(github.event.comment.body, '/approve') && contains(github.event.comment.owner, 'tdupoiron')
+# Test if editor is tdupoiron
+    if: contains(github.event.comment.body, '/approve') && contains(github.event.comment.user.login, 'tdupoiron')
 
     runs-on: ubuntu-latest
     needs: extract_repository_settings
