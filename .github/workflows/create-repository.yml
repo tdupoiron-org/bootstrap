@@ -29,10 +29,10 @@ jobs:
     needs: extract_repository_settings
 
     env:
-      GITHUB_TOKEN: ${{ secrets.BOOTSTRAP_TOKEN }}
-      #APP_ID: ${{ secrets.BOOTSTRAP_APP_ID }}
-      #PRIVATE_KEY: ${{ secrets.BOOTSTRAP_PRIVATE_KEY }}
-      #INSTALLATION_ID: ${{ secrets.BOOTSTRAP_INSTALLATION_ID }}
+      #GITHUB_TOKEN: ${{ secrets.BOOTSTRAP_TOKEN }}
+      APP_ID: ${{ secrets.BOOTSTRAP_APP_ID }}
+      PRIVATE_KEY: ${{ secrets.BOOTSTRAP_PRIVATE_KEY }}
+      INSTALLATION_ID: ${{ secrets.BOOTSTRAP_INSTALLATION_ID }}
 
     outputs:
       status: ${{ steps.create_repository.outputs.status }}
@@ -91,7 +91,10 @@ jobs:
     needs: [create_repository, extract_repository_settings]
 
     env:
-      GITHUB_TOKEN: ${{ secrets.BOOTSTRAP_TOKEN }}
+      #GITHUB_TOKEN: ${{ secrets.BOOTSTRAP_TOKEN }}
+      APP_ID: ${{ secrets.BOOTSTRAP_APP_ID }}
+      PRIVATE_KEY: ${{ secrets.BOOTSTRAP_PRIVATE_KEY }}
+      INSTALLATION_ID: ${{ secrets.BOOTSTRAP_INSTALLATION_ID }}
 
     outputs:
       status: ${{ steps.protect_repository.outputs.status }}
