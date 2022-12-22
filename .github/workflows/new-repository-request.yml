@@ -14,11 +14,11 @@ jobs:
     if: contains(github.event.issue.labels.*.name, 'new-repository-request')
 
     runs-on: ubuntu-latest
-    
     outputs: 
       repository_name: ${{ steps.extract.outputs.repository_name }}
       repository_visibility: ${{ steps.extract.outputs.repository_visibility }}
 
+    steps:
       - name: Extract repository settings
         id: extract
         run: |
@@ -26,7 +26,7 @@ jobs:
           echo "::set-output name=repository_name::$(awk '/### Repository name/{getline; getline; print}' body.txt)"
           echo "::set-output name=repository_visibility::$(awk '/### Repository visibility/{getline; getline; print}' body.txt)"
 
-  # Add a comment to the issue to request approval
+  # Request approval
   request_approval:
     runs-on: ubuntu-latest
     needs: extract_repository_settings
@@ -60,7 +60,7 @@ jobs:
               body: "This repository creation request has been sent to the repository administrators for approval."
             })
 
-      - name: Simple Issue Labeler
+      - name: Add label "waiting-for-approval"
         uses: andymckay/labeler@1.0.4
         with:
           add-labels: "waiting-for-approval"
