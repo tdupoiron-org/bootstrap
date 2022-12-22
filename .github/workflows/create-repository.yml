@@ -6,6 +6,7 @@ on:
 
 jobs:
 
+  # Extract repository settings from issue body
   extract_repository_settings:
     runs-on: ubuntu-latest
     outputs: 
@@ -20,9 +21,10 @@ jobs:
           echo "::set-output name=repository_name::$(awk '/### Repository name/{getline; getline; print}' body.txt)"
           echo "::set-output name=repository_visibility::$(awk '/### Repository visibility/{getline; getline; print}' body.txt)"
 
+  # Create repository
   create_repository:
 
-# Test if editor is tdupoiron
+    # Test if comment author is tdupoiron
     if: contains(github.event.comment.body, '/approve') && contains(github.event.comment.user.login, 'tdupoiron')
 
     runs-on: ubuntu-latest
@@ -40,7 +42,7 @@ jobs:
 
     steps:
 
-      - name: Approved
+      - name: Add labels [approved, processing]
         uses: andymckay/labeler@1.0.4
         with:
           add-labels: "approved, processing"
@@ -70,21 +72,23 @@ jobs:
               body: "Repository [${{ needs.extract_repository_settings.outputs.repository_name }}](${{ steps.create_repository.outputs.repository_url }}) created"
             })
 
-      - name: Repo created label
+      - name: Add label if success [1-repository-created]
         if: contains(steps.create_repository.outputs.status, 'success')
         uses: andymckay/labeler@1.0.4
         with:
           add-labels: "1-repository-created"
 
-      - name: Repo creation failed label
+      - name: Add label if error [1-repository-creation-failed]
         if: contains(steps.create_repository.outputs.status, 'error')
         uses: andymckay/labeler@1.0.4
         with:
           add-labels: "1-repository-creation-failed"
           remove-labels: "processing"
 
+  # Set repository policies
   protect_repository:
 
+    # Test if repository creation was successful
     if: contains(github.event.issue.labels.*.name, '1-repository-created') || contains(needs.create_repository.outputs.status, 'success')
 
     runs-on: ubuntu-latest
@@ -112,21 +116,21 @@ jobs:
           organization_name: ${{ github.repository_owner }}
           repository_name: ${{ needs.extract_repository_settings.outputs.repository_name }}
 
-      - name: Branch protection created label
+      - name: Add label if success [2-branch-protection-created]
         if: contains(steps.protect_repository.outputs.status, 'success')
         uses: andymckay/labeler@1.0.4
         with:
           add-labels: "2-branch-protection-created, done"
           remove-labels: "processing"
 
-      - name: Branch protection creation failed label
+      - name: Add label if error [2-branch-protection-creation-failed]
         if: contains(steps.protect_repository.outputs.status, 'error')
         uses: andymckay/labeler@1.0.4
         with:
           add-labels: "2-branch-protection-creation-failed, done"
           remove-labels: "processing"
 
-      - name: Close issue
+      - name: Close issue if success
         if: contains(steps.protect_repository.outputs.status, 'success')
         uses: actions/github-script@v6.3.3
         with:
@@ -139,6 +143,7 @@ jobs:
               state: "closed"
             })
 
+  # Reject repository creation
   reject_repository:
 
     if: contains(github.event.comment.body, '/reject')
@@ -148,7 +153,7 @@ jobs:
 
     steps:
 
-      - name: Rejected
+      - name: Add label [rejected]
         uses: andymckay/labeler@1.0.4
         with:
           add-labels: "rejected"
