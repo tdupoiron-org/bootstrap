@@ -2,18 +2,18 @@ const core = require('@actions/core');
 const { Octokit } = require("@octokit/rest");
 const { createAppAuth } = require("@octokit/auth-app");
 
-const octokit = new Octokit({
+/*const octokit = new Octokit({
     authStrategy: createAppAuth,
     auth: {
         appId: process.env.APP_ID,
         privateKey: process.env.PRIVATE_KEY,
         installationId: process.env.INSTALLATION_ID,
     },
-});
-
-/*const octokit = new Octokit({
-    auth: process.env.GITHUB_TOKEN,
 });*/
+
+const octokit = new Octokit({
+    auth: process.env.GITHUB_TOKEN,
+});
 
 // Set branch protection on main
 async function setBranchProtection(organization, name, branch) {
