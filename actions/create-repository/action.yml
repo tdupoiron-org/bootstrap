@@ -3,6 +3,7 @@ name: Create Repository
 description: Create a new repository
 
 inputs:
+  #process.env.INPUT_ORGANIZATION_NAME
   organization_name:
     description: The name of the organization
     required: true
