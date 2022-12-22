@@ -29,7 +29,7 @@ async function createRepository(organization, name, visibility) {
         core.setOutput("status", "success");
     }).catch((error) => {
         console.log(error);
-        core.setOutput("error", error.response.data);
+        core.setOutput("error", error);
         core.setOutput("status", "error");
     });
 
