@@ -9,6 +9,7 @@ on:
 
 jobs:
 
+  # Extract repository settings from issue body
   extract_repository_settings:
     if: contains(github.event.issue.labels.*.name, 'new-repository-request')
 
@@ -17,19 +18,6 @@ jobs:
       repository_name: ${{ steps.extract.outputs.repository_name }}
       repository_visibility: ${{ steps.extract.outputs.repository_visibility }}
 
-    steps:
-      - name: Display labels by javscript
-        uses: actions/github-script@v6.3.3
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const labels = context.payload.issue.labels.map(label => label.name)
-            console.log(labels)
-
-      - name: Display labels
-        run: |
-          echo "${{ github.event.issue.labels.*.name }}"
-
       - name: Extract repository settings
         id: extract
         run: |
@@ -37,12 +25,12 @@ jobs:
           echo "::set-output name=repository_name::$(awk '/### Repository name/{getline; getline; print}' body.txt)"
           echo "::set-output name=repository_visibility::$(awk '/### Repository visibility/{getline; getline; print}' body.txt)"
 
+  # Add a comment to the issue to request approval
   request_approval:
     runs-on: ubuntu-latest
     needs: extract_repository_settings
 
     env:
-      GITHUB_TOKEN: ${{ secrets.BOOTSTRAP_TOKEN }}
       ASSIGNEE: "tdupoiron"
 
     steps:
