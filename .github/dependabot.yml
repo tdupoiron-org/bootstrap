@@ -15,3 +15,8 @@ updates:
    directory: "/"
    schedule:
      interval: weekly
+
+ - package-ecosystem: "npm"
+   directories:
+      - "/actions/create-repository"
+      - "/actions/protect-repository"
