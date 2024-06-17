@@ -34,7 +34,7 @@ jobs:
       #     owner: ${{ github.repository_owner }}
 
       - name: Rename issue
-        uses: actions/github-script@v6.3.3
+        uses: actions/github-script@v7.0.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -51,7 +51,7 @@ jobs:
             })
 
       - name: Add comment
-        uses: actions/github-script@v6.3.3
+        uses: actions/github-script@v7.0.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -63,7 +63,7 @@ jobs:
             })
 
       - name: Add label "waiting-for-approval"
-        uses: actions/github-script@v6.3.3
+        uses: actions/github-script@v7.0.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -100,7 +100,7 @@ jobs:
             }
 
       - name: Assign issue
-        uses: actions/github-script@v6.3.3
+        uses: actions/github-script@v7.0.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -112,7 +112,7 @@ jobs:
             })
 
       - name: Add comment
-        uses: actions/github-script@v6.3.3
+        uses: actions/github-script@v7.0.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
