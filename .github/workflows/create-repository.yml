@@ -61,7 +61,7 @@ jobs:
 
       - name: Add comment
         if: contains(steps.create_repository.outputs.status, 'success')
-        uses: actions/github-script@v6.3.3
+        uses: actions/github-script@v7.0.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -132,7 +132,7 @@ jobs:
 
       - name: Close issue if success
         if: contains(steps.protect_repository.outputs.status, 'success')
-        uses: actions/github-script@v6.3.3
+        uses: actions/github-script@v7.0.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
