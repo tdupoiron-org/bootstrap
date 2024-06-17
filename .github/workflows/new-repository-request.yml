@@ -15,6 +15,7 @@ jobs:
 
     env:
       APPROVAL_TEAM: ${{ vars.BOOTSTRAP_REPO_MANAGERS }}
+      APPROVAL_TEAM_FULL_NAME: ${{ github.repository_owner }}/${{ vars.BOOTSTRAP_REPO_MANAGERS }}
 
     if: contains(github.event.issue.labels.*.name, 'new-repository-request')
 
@@ -128,7 +129,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              assignees: [process.env.APPROVAL_TEAM]
+              assignees: [process.env.APPROVAL_TEAM_FULL_NAME]
             })
 
       - name: Add comment
@@ -140,5 +141,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: "@" + process.env.APPROVAL_TEAM + " please review this repository creation request : \n\n - Repository name : ${{ needs.extract_repository_settings.outputs.repository_name }} \n\n - Repository visibility : ${{ needs.extract_repository_settings.outputs.repository_visibility }} \n\n Comment `/approve` to approve this request or `/reject` to reject it."
+              body: "@" + process.env.APPROVAL_TEAM_FULL_NAME + " please review this repository creation request : \n\n - Repository name : ${{ needs.extract_repository_settings.outputs.repository_name }} \n\n - Repository visibility : ${{ needs.extract_repository_settings.outputs.repository_visibility }} \n\n Comment `/approve` to approve this request or `/reject` to reject it."
             })
