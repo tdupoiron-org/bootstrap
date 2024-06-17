@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      APPROVAL_TEAM: ${{ secrets.BOOTSTRAP_REPO_MANAGERS }}
+      APPROVAL_TEAM: ${{ vars.BOOTSTRAP_REPO_MANAGERS }}
 
     if: contains(github.event.issue.labels.*.name, 'new-repository-request')
 
