@@ -49,7 +49,7 @@ jobs:
           remove-labels: "rejected, waiting-for-approval, 1-repository-creation-failed, 2-branch-protection-creation-failed, done"
 
       - name: Checkout repository
-        uses: actions/checkout@v2.6.0
+        uses: actions/checkout@v4.1.7
 
       - name: Create repository
         id: create_repository
@@ -107,7 +107,7 @@ jobs:
     steps:
 
       - name: Checkout repository
-        uses: actions/checkout@v2.6.0
+        uses: actions/checkout@v4.1.7
 
       - name: Set repository policies
         id: protect_repository
