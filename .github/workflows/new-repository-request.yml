@@ -14,24 +14,44 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      APPROVAL_TEAM: "repository-managers"
+      APPROVAL_TEAM: ${{ secrets.BOOTSTRAP_REPO_MANAGERS }}
 
     if: contains(github.event.issue.labels.*.name, 'new-repository-request')
 
     steps:
-      - name: Extract repository settings
+      - name: Extract Repository Settings
         id: extract
         run: |
           echo "${{ github.event.issue.body }}" >> body.txt
           echo "::set-output name=repository_name::$(awk '/### Repository name/{getline; getline; print}' body.txt)"
           echo "::set-output name=repository_visibility::$(awk '/### Repository visibility/{getline; getline; print}' body.txt)"
 
-      # - uses: actions/create-github-app-token@v1
-      #   id: app-token
-      #   with:
-      #     app-id: ${{ vars.BOOTSTRAP_APP_ID }}
-      #     private-key: ${{ secrets.BOOTSTRAP_PRIVATE_KEY }}
-      #     owner: ${{ github.repository_owner }}
+      - name: Create Installation Token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.BOOTSTRAP_APP_ID }}
+          private-key: ${{ secrets.BOOTSTRAP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
+      - name: Retrieve Team Members
+        id: team-members
+        uses: actions/github-script@v6.3.3
+        with:
+          github-token: ${{ steps.app-token.outputs.token }}
+          script: |
+            const teamMembers = await github.rest.teams.listMembersInOrg({
+              org: context.repo.owner,
+              team_slug: process.env.APPROVAL_TEAM
+            });
+            core.setOutput('teamMembers', teamMembers.data.map(member => member.login).join(', '));
+
+      - name: debug
+        run: |
+          echo "Repository name: ${{ needs.extract.outputs.repository_name }}"
+          echo "Repository visibility: ${{ needs.extract.outputs.repository_visibility }}"
+          echo "Approval team: ${{ env.APPROVAL_TEAM }}"
+          echo "Team members: ${{ steps.team-members.outputs.teamMembers }}"
 
       - name: Rename issue
         uses: actions/github-script@v6.3.3
