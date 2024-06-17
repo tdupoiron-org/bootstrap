@@ -9,13 +9,11 @@ on:
 jobs:
 
   # Extract repository settings from issue body
-  extract_repository_settings:
+  new-repository-request:
     if: contains(github.event.issue.labels.*.name, 'new-repository-request')
 
-    runs-on: ubuntu-latest
-    outputs: 
-      repository_name: ${{ steps.extract.outputs.repository_name }}
-      repository_visibility: ${{ steps.extract.outputs.repository_visibility }}
+    env:
+      APPROVAL_TEAM: "repository-managers"
 
     steps:
       - name: Extract repository settings
@@ -25,27 +23,17 @@ jobs:
           echo "::set-output name=repository_name::$(awk '/### Repository name/{getline; getline; print}' body.txt)"
           echo "::set-output name=repository_visibility::$(awk '/### Repository visibility/{getline; getline; print}' body.txt)"
 
-  # Request approval
-  request_approval:
-    runs-on: ubuntu-latest
-    needs: extract_repository_settings
-
-    env:
-      APPROVAL_TEAM: "repository-managers"
-
-    steps:
-
-      - uses: actions/create-github-app-token@v1
-        id: app-token
-        with:
-          app-id: ${{ vars.BOOTSTRAP_APP_ID }}
-          private-key: ${{ secrets.BOOTSTRAP_PRIVATE_KEY }}
-          owner: ${{ github.repository_owner }}
+      # - uses: actions/create-github-app-token@v1
+      #   id: app-token
+      #   with:
+      #     app-id: ${{ vars.BOOTSTRAP_APP_ID }}
+      #     private-key: ${{ secrets.BOOTSTRAP_PRIVATE_KEY }}
+      #     owner: ${{ github.repository_owner }}
 
       - name: Rename issue
         uses: actions/github-script@v6.3.3
         with:
-          github-token: ${{ steps.app-token.outputs.token}}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             console.log("Title: New repository request: ${{ needs.extract_repository_settings.outputs.repository_name }}");
             console.log("Issue number: " + context.issue.number);
@@ -62,7 +50,7 @@ jobs:
       - name: Add comment
         uses: actions/github-script@v6.3.3
         with:
-          github-token: ${{ steps.app-token.outputs.token}}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             github.rest.issues.createComment({
               issue_number: context.issue.number,
@@ -72,15 +60,28 @@ jobs:
             })
 
       - name: Add label "waiting-for-approval"
-        uses: andymckay/labeler@1.0.4
+        uses: actions/github-script@v6.3.3
         with:
-          add-labels: "waiting-for-approval"
-          remove-labels: "new-repository-request, rejected, approved"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.addLabels({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: ["waiting-for-approval"]
+            })
+
+            github.rest.issues.removeLabel({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              name: ["new-repository-request", "rejected", "approved"]
+            })
 
       - name: Assign issue
         uses: actions/github-script@v6.3.3
         with:
-          github-token: ${{ steps.app-token.outputs.token}}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             github.rest.issues.addAssignees({
               issue_number: context.issue.number,
