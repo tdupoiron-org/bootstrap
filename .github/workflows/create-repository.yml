@@ -1,8 +1,12 @@
----
 name: Create Repository
+
 on:
   issue_comment:
     types: [created, edited]
+
+env:
+  APPROVAL_TEAM: ${{ vars.BOOTSTRAP_REPO_MANAGERS }}
+  APPROVAL_TEAM_FULL_NAME: ${{ github.repository_owner }}/${{ vars.BOOTSTRAP_REPO_MANAGERS }}
 
 jobs:
 
@@ -12,6 +16,8 @@ jobs:
     outputs: 
       repository_name: ${{ steps.extract.outputs.repository_name }}
       repository_visibility: ${{ steps.extract.outputs.repository_visibility }}
+      token: ${{ steps.app-token.outputs.token }}
+      assignees: ${{ steps.get_team_members.outputs.assignees }}
 
     steps:
       - name: Extract repository settings
@@ -21,20 +27,36 @@ jobs:
           echo "::set-output name=repository_name::$(awk '/### Repository name/{getline; getline; print}' body.txt)"
           echo "::set-output name=repository_visibility::$(awk '/### Repository visibility/{getline; getline; print}' body.txt)"
 
+      - name: Create Installation Token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.BOOTSTRAP_APP_ID }}
+          private-key: ${{ secrets.BOOTSTRAP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
+      - name: Get Team Members
+        uses: actions/github-script@v7.0.1
+        with:
+          github-token: ${{ steps.app-token.outputs.token }}
+          script: |
+            const teamMembers = await github.rest.teams.listMembersInOrg({
+              org: context.repo.owner,
+              team_slug: process.env.APPROVAL_TEAM
+            });
+            const assignees = teamMembers.data.map(member => member.login);
+            core.setOutput('assignees', assignees.join(','))
+
   # Create repository
   create_repository:
 
-    # Test if comment author is tdupoiron
-    if: contains(github.event.comment.body, '/approve') && contains(github.event.comment.user.login, 'tdupoiron')
-
     runs-on: ubuntu-latest
     needs: extract_repository_settings
+    
+    if: contains(github.event.comment.body, '/approve') && contains(needs.extract_repository_settings.outputs.assignees, github.event.comment.user.login)
 
     env:
-      GITHUB_TOKEN: ${{ secrets.BOOTSTRAP_TOKEN }}
-      #APP_ID: ${{ secrets.BOOTSTRAP_APP_ID }}
-      #PRIVATE_KEY: ${{ secrets.BOOTSTRAP_PRIVATE_KEY }}
-      #INSTALLATION_ID: ${{ secrets.BOOTSTRAP_INSTALLATION_ID }}
+      GITHUB_TOKEN: ${{ needs.extract_repository_settings.outputs.token }}
 
     outputs:
       status: ${{ steps.create_repository.outputs.status }}
