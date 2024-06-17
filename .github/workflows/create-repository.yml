@@ -129,12 +129,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: [create_repository, extract_repository_settings]
 
-    env:
-      GITHUB_TOKEN: ${{ secrets.BOOTSTRAP_TOKEN }}
-      #APP_ID: ${{ secrets.BOOTSTRAP_APP_ID }}
-      #PRIVATE_KEY: ${{ secrets.BOOTSTRAP_PRIVATE_KEY }}
-      #INSTALLATION_ID: ${{ secrets.BOOTSTRAP_INSTALLATION_ID }}
-
     outputs:
       status: ${{ steps.protect_repository.outputs.status }}
       error: ${{ steps.protect_repository.outputs.error }}
@@ -144,12 +138,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4.1.7
 
+      - name: Create Installation Token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.BOOTSTRAP_APP_ID }}
+          private-key: ${{ secrets.BOOTSTRAP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
       - name: Set repository policies
         id: protect_repository
         uses: ./actions/protect-repository
         with: 
           organization_name: ${{ github.repository_owner }}
           repository_name: ${{ needs.extract_repository_settings.outputs.repository_name }}
+        env:
+          GITHUB_TOKEN: ${{steps.app-token.outputs.token}}
 
       - name: Add label if success [2-branch-protection-created]
         if: contains(steps.protect_repository.outputs.status, 'success')
@@ -157,6 +161,8 @@ jobs:
         with:
           add-labels: "2-branch-protection-created, done"
           remove-labels: "processing"
+        env:
+          GITHUB_TOKEN: ${{steps.app-token.outputs.token}}
 
       - name: Add label if error [2-branch-protection-creation-failed]
         if: contains(steps.protect_repository.outputs.status, 'error')
@@ -164,12 +170,14 @@ jobs:
         with:
           add-labels: "2-branch-protection-creation-failed, done"
           remove-labels: "processing"
+        env:
+          GITHUB_TOKEN: ${{steps.app-token.outputs.token}}
 
       - name: Close issue if success
         if: contains(steps.protect_repository.outputs.status, 'success')
         uses: actions/github-script@v7.0.1
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{steps.app-token.outputs.token}}
           script: |
             github.rest.issues.update({
               issue_number: context.issue.number,
@@ -188,8 +196,18 @@ jobs:
 
     steps:
 
+      - name: Create Installation Token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.BOOTSTRAP_APP_ID }}
+          private-key: ${{ secrets.BOOTSTRAP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
       - name: Add label [rejected]
         uses: andymckay/labeler@1.0.4
         with:
           add-labels: "rejected"
           remove-labels: "approved, processing, waiting-for-approval, done"
+        env:
+          GITHUB_TOKEN: ${{steps.app-token.outputs.token}}

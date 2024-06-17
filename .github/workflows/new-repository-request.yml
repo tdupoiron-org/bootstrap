@@ -1,4 +1,4 @@
-name: New repository request
+name: New Repository Request
 
 on:
   issues:
