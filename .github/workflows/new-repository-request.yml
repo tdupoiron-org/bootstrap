@@ -74,7 +74,8 @@ jobs:
               labels: ["waiting-for-approval"]
             })
 
-            console.log(JSON.stringify(github.event));
+            console.log(JSON.stringify(context));
+            console.log(JSON.stringify(github));
 
             if (github.event.issue.labels.find(label => label.name === 'new-repository-request')) {
               github.rest.issues.removeLabel({
