@@ -1,4 +1,3 @@
----
 name: New repository request
 on:
   issues:
@@ -32,14 +31,21 @@ jobs:
     needs: extract_repository_settings
 
     env:
-      ASSIGNEE: "tdupoiron"
+      APPROVAL_TEAM: "repository-managers"
 
     steps:
+
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          app-id: ${{ vars.BOOTSTRAP_APP_ID }}
+          private-key: ${{ secrets.BOOTSTRAP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
 
       - name: Rename issue
         uses: actions/github-script@v6.3.3
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ steps.app-token.outputs.token}}
           script: |
             console.log("Title: New repository request: ${{ needs.extract_repository_settings.outputs.repository_name }}");
             console.log("Issue number: " + context.issue.number);
@@ -56,13 +62,13 @@ jobs:
       - name: Add comment
         uses: actions/github-script@v6.3.3
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ steps.app-token.outputs.token}}
           script: |
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: "This repository creation request has been sent to the repository administrators for approval."
+              body: "This repository creation request has been sent to the repository managers for approval."
             })
 
       - name: Add label "waiting-for-approval"
@@ -74,7 +80,7 @@ jobs:
       - name: Assign issue
         uses: actions/github-script@v6.3.3
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ steps.app-token.outputs.token}}
           script: |
             github.rest.issues.addAssignees({
               issue_number: context.issue.number,
