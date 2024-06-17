@@ -10,10 +10,13 @@ jobs:
 
   # Extract repository settings from issue body
   new-repository-request:
-    if: contains(github.event.issue.labels.*.name, 'new-repository-request')
+
+    runs-on: ubuntu-latest
 
     env:
       APPROVAL_TEAM: "repository-managers"
+
+    if: contains(github.event.issue.labels.*.name, 'new-repository-request')
 
     steps:
       - name: Extract repository settings
@@ -87,7 +90,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              assignees: [process.env.ASSIGNEE]
+              assignees: [process.env.APPROVAL_TEAM]
             })
 
       - name: Add comment
@@ -99,5 +102,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: "@" + process.env.ASSIGNEE + " please review this repository creation request : \n\n - Repository name : ${{ needs.extract_repository_settings.outputs.repository_name }} \n\n - Repository visibility : ${{ needs.extract_repository_settings.outputs.repository_visibility }} \n\n Comment `/approve` to approve this request or `/reject` to reject it."
+              body: "@" + process.env.APPROVAL_TEAM + " please review this repository creation request : \n\n - Repository name : ${{ needs.extract_repository_settings.outputs.repository_name }} \n\n - Repository visibility : ${{ needs.extract_repository_settings.outputs.repository_visibility }} \n\n Comment `/approve` to approve this request or `/reject` to reject it."
             })
