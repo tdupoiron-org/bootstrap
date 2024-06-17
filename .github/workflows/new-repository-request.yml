@@ -35,31 +35,12 @@ jobs:
           private-key: ${{ secrets.BOOTSTRAP_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
 
-      - name: Retrieve Team Members
-        id: team-members
-        uses: actions/github-script@v6.3.3
-        with:
-          github-token: ${{ steps.app-token.outputs.token }}
-          script: |
-            const teamMembers = await github.rest.teams.listMembersInOrg({
-              org: context.repo.owner,
-              team_slug: process.env.APPROVAL_TEAM
-            });
-            core.setOutput('teamMembers', teamMembers.data.map(member => member.login).join(', '));
-
-      - name: debug
-        run: |
-          echo "Repository name: ${{ needs.extract.outputs.repository_name }}"
-          echo "Repository visibility: ${{ needs.extract.outputs.repository_visibility }}"
-          echo "Approval team: ${{ env.APPROVAL_TEAM }}"
-          echo "Team members: ${{ steps.team-members.outputs.teamMembers }}"
-
       - name: Rename issue
         uses: actions/github-script@v7.0.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            console.log("Title: New repository request: ${{ needs.extract_repository_settings.outputs.repository_name }}");
+            console.log("Title: New repository request: ${{ steps.extract.outputs.repository_name }}");
             console.log("Issue number: " + context.issue.number);
             console.log("Owner: " + context.repo.owner);
             console.log("Repo: " + context.repo.repo);
@@ -68,7 +49,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: "New repository request: ${{ needs.extract_repository_settings.outputs.repository_name }}"
+              title: "New repository request: ${{ steps.extract.outputs.repository_name }}"
             })
 
       - name: Add comment
@@ -120,16 +101,23 @@ jobs:
               })
             }
 
-      - name: Assign issue
+      - name: Assign issue to all Team members
         uses: actions/github-script@v7.0.1
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ steps.app-token.outputs.token }}
           script: |
+            const teamMembers = await github.rest.teams.listMembersInOrg({
+              org: context.repo.owner,
+              team_slug: process.env.APPROVAL_TEAM
+            });
+
+            const assignees = teamMembers.data.map(member => member.login);
+
             github.rest.issues.addAssignees({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              assignees: [process.env.APPROVAL_TEAM_FULL_NAME]
+              assignees: assignees
             })
 
       - name: Add comment
@@ -141,5 +129,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: "@" + process.env.APPROVAL_TEAM_FULL_NAME + " please review this repository creation request : \n\n - Repository name : ${{ needs.extract_repository_settings.outputs.repository_name }} \n\n - Repository visibility : ${{ needs.extract_repository_settings.outputs.repository_visibility }} \n\n Comment `/approve` to approve this request or `/reject` to reject it."
+              body: "@" + process.env.APPROVAL_TEAM_FULL_NAME + " please review this repository creation request : \n\n - Repository name : ${{ steps.extract.outputs.repository_name }} \n\n - Repository visibility : ${{ steps.extract.outputs.repository_visibility }} \n\n Comment `/approve` to approve this request or `/reject` to reject it."
             })
