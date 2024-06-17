@@ -13,11 +13,11 @@ jobs:
   # Extract repository settings from issue body
   extract_repository_settings:
     runs-on: ubuntu-latest
-    outputs: 
+    outputs:
       repository_name: ${{ steps.extract.outputs.repository_name }}
       repository_visibility: ${{ steps.extract.outputs.repository_visibility }}
-      token: ${{ steps.app-token.outputs.token }}
       assignees: ${{ steps.get_team_members.outputs.assignees }}
+      token: ${{ steps.app-token.outputs.token }}
 
     steps:
       - name: Extract repository settings
