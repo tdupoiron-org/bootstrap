@@ -168,7 +168,7 @@ jobs:
   # Reject repository creation
   reject_repository:
 
-    if: contains(github.event.comment.body, '/reject')
+    if: contains(github.event.comment.body, '/reject' && contains(needs.extract_repository_settings.outputs.assignees, github.event.comment.user.login)
 
     runs-on: ubuntu-latest
     needs: extract_repository_settings
