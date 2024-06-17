@@ -74,12 +74,30 @@ jobs:
               labels: ["waiting-for-approval"]
             })
 
-            github.rest.issues.removeLabel({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              name: ["new-repository-request", "rejected", "approved"]
-            })
+            if (github.event.issue.labels.find(label => label.name === 'new-repository-request')) {
+              github.rest.issues.removeLabel({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: ["new-repository-request"]
+              })
+            }
+            if (github.event.issue.labels.find(label => label.name === 'approved')) {
+              github.rest.issues.removeLabel({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: ["approved"]
+              })
+            }
+            if (github.event.issue.labels.find(label => label.name === 'rejected')) {
+              github.rest.issues.removeLabel({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: ["rejected"]
+              })
+            }
 
       - name: Assign issue
         uses: actions/github-script@v6.3.3
