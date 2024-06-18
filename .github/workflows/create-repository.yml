@@ -211,3 +211,16 @@ jobs:
           remove-labels: "approved, processing, waiting-for-approval, done"
         env:
           GITHUB_TOKEN: ${{steps.app-token.outputs.token}}
+
+      - name: Close issue as not planned
+        uses: actions/github-script@v7.0.1
+        with:
+          github-token: ${{ steps.app-token.outputs.token }}
+          script: |
+            github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              state: "closed",
+              state_reason: "not planned"
+            });
