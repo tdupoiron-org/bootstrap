@@ -87,6 +87,7 @@ jobs:
           organization_name: ${{ github.repository_owner }}
           repository_name: ${{ needs.extract_repository_settings.outputs.repository_name }}
           repository_visibility: ${{ needs.extract_repository_settings.outputs.repository_visibility }}
+          maintainer: ${{ github.event.issue.user.login }}
         env:
           GITHUB_TOKEN: ${{steps.app-token.outputs.token}}
 

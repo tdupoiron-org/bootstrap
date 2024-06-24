@@ -3,7 +3,6 @@ name: Create Repository
 description: Create a new repository
 
 inputs:
-  #process.env.INPUT_ORGANIZATION_NAME
   organization_name:
     description: The name of the organization
     required: true
@@ -14,6 +13,9 @@ inputs:
     description: The visibility of the repository
     required: false
     default: public
+  maintainer:
+    description: The username of the maintainer
+    required: true
 
 outputs:
   repository_id:
